@@ -1,0 +1,359 @@
+:root {
+    --primary-color: #2E8B57;
+    /* Un vert "SeaGreen" pour le côté Eco */
+    --secondary-color: #3CB371;
+    --accent-color: #FFD700;
+    --dark-color: #333;
+    --light-color: #f4f4f4;
+    --white: #ffffff;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    /* Pousse le footer vers le bas */
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header & Nav */
+header {
+    background-color: var(--white);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    position: relative;
+    z-index: 50;
+    width: 100%;
+    /* Force la largeur */
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+    flex: 1;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    flex: 2;
+    justify-content: center;
+}
+
+.nav-auth {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-color);
+    font-weight: 500;
+    transition: color 0.3s;
+    font-size: 1.1rem;
+}
+
+.nav-links a:hover {
+    color: var(--secondary-color);
+}
+
+.btn-cta {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.btn-cta:hover {
+    transform: translateY(-2px);
+    background-color: var(--secondary-color);
+}
+
+/* Dropdown Menu Amélioré et Robuste */
+.user-menu {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    /* Zone tampon invisible vers le bas pour le hover */
+    padding-bottom: 25px;
+    margin-bottom: -25px;
+}
+
+.profile-pic {
+    width: 48px;
+    /* Image légèrement plus grande */
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-menu:hover .profile-pic {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    /* Collé juste sous l'image pour éviter tout "trou" */
+    background-color: var(--white);
+    min-width: 220px;
+    /* Menu plus large */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.dropdown-content a {
+    color: var(--dark-color);
+    padding: 15px 20px;
+    /* Cible de clic plus grande */
+    text-decoration: none;
+    display: block;
+    font-size: 1rem;
+    border-bottom: 1px solid #f9f9f9;
+    transition: background-color 0.2s;
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0fdf4;
+    /* Vert très clair */
+    color: var(--primary-color);
+}
+
+/* Affichage au survol du parent .user-menu */
+.user-menu:hover .dropdown-content {
+    display: block;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-color);
+    color: var(--white);
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Tablette et Mobile */
+@media (max-width: 768px) {
+
+    /* Header & Nav */
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* Fix Header Admin Centré */
+    .admin-header .container {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 1rem;
+        width: 100%;
+        padding: 1rem;
+        /* Un peu d'air */
+    }
+
+    .admin-nav {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .nav-auth {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .nav-auth .profile-pic {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Container */
+    .container {
+        padding: 0 15px;
+    }
+
+    /* Tableaux (Scroll horizontal si trop large) */
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Cartes & Formulaires */
+    .card,
+    .detail-card,
+    .search-box {
+        padding: 1rem;
+        width: 100%;
+    }
+
+    /* Grilles (Dashboard Admin & Home) */
+    .kpi-grid,
+    .detail-card>div,
+    .features-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* User Detail Header */
+    .user-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    /* Formulaire de recherche Admin (Dashboard) */
+    #users-list>div {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #users-list form {
+        flex-direction: column;
+    }
+
+    /* Page Covoiturages (Résultats & Filtres) */
+    .results-container {
+        flex-direction: column;
+    }
+
+    .filters {
+        width: 100% !important;
+        /* Force override inline styles if present */
+        margin-bottom: 2rem;
+    }
+
+    .covoiturage-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .card-left {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .driver-img {
+        margin-bottom: 5px;
+    }
+
+    .card-right {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .price {
+        margin-bottom: 0;
+    }
+}
+
+/* Mobile Très Petit */
+@media (max-width: 480px) {
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+        margin-bottom: 0.5rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .card-right {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
