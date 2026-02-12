@@ -1,4 +1,3 @@
-/* Base de données Relationnelle (MySQL/MariaDB) */
 
 CREATE DATABASE IF NOT EXISTS ecoride;
 USE ecoride;
@@ -12,7 +11,15 @@ DROP TABLE IF EXISTS voiture;
 DROP TABLE IF EXISTS utilisateur;
 DROP TABLE IF EXISTS marque;
 DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS parametre;
 SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE parametre (
+    id_parametre INT AUTO_INCREMENT PRIMARY KEY,
+    propriete VARCHAR(100) NOT NULL UNIQUE,
+    valeur VARCHAR(255) NOT NULL,
+    description VARCHAR(255)
+);
 
 CREATE TABLE role (
     id_role INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,6 +70,8 @@ CREATE TABLE covoiturage (
     id_covoiturage INT AUTO_INCREMENT PRIMARY KEY,
     date_depart DATE NOT NULL,
     heure_depart TIME NOT NULL,
+    date_arrivee DATE NOT NULL,
+    heure_arrivee TIME NOT NULL,
     lieu_depart VARCHAR(100) NOT NULL,
     lieu_arrivee VARCHAR(100) NOT NULL,
     statut VARCHAR(50) DEFAULT 'PLANIFIÉ',
@@ -101,6 +110,12 @@ INSERT INTO role (libelle) VALUES ('Visiteur'), ('Utilisateur'), ('Employe'), ('
 INSERT INTO marque (libelle) VALUES ('Tesla'), ('Renault'), ('Peugeot'), ('BMW'), ('Toyota');
 
 /* Utilisateur test pour seed.php (EcoDriver) */
-/* Mot de passe hashé (ex: 123456) */
+/* Mot de passe hashé (mot de passe : 'test') */
 INSERT INTO utilisateur (email, password, pseudo, id_role, credits) VALUES 
-('test@test.com', '$2y$10$abcdef123456', 'EcoDriver', 2, 50);
+('test@test.com', '$2y$10$xRXr3xYe.GPMj0R/nFTWEeyoafsJvaJ0npAbH.9hJ3UAtE8Z9Xy66', 'EcoDriver', 2, 50),
+('employe@test.com', '$2y$10$xRXr3xYe.GPMj0R/nFTWEeyoafsJvaJ0npAbH.9hJ3UAtE8Z9Xy66', 'EmployeTest', 3, 999),
+('admin@test.com', '$2y$10$xRXr3xYe.GPMj0R/nFTWEeyoafsJvaJ0npAbH.9hJ3UAtE8Z9Xy66', 'AdminTest', 4, 999);
+
+INSERT INTO parametre (propriete, valeur, description) VALUES 
+('credits_inscription', '20', 'Nombre de crédits offerts à l\'inscription'),
+('commission_trajet', '2', 'Nombre de crédits prélevés par EcoRide par trajet');
