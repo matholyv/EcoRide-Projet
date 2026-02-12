@@ -13,9 +13,9 @@ try {
     $id_conducteur = $stmt->fetchColumn();
 
     if (!$id_conducteur) {
-        die("❌ Erreur : L'utilisateur test@test.com n'existe pas. Veuillez lancer reinstall_db.php d'abord.\n");
+        die("Erreur : L'utilisateur test@test.com n'existe pas. Veuillez lancer reinstall_db.php d'abord.\n");
     }
-    echo "👤 Utilisateur EcoDriver trouvé (ID $id_conducteur).\n";
+    echo "Utilisateur EcoDriver trouvé (ID $id_conducteur).\n";
 
     // On utilise cet ID pour la suite
     $id_utilisateur = $id_conducteur;
@@ -31,9 +31,9 @@ try {
         $db->prepare("INSERT INTO voiture (modele, immatriculation, energie, couleur, nombre_places, id_marque, id_utilisateur) 
                       VALUES ('Model 3', 'AB-123-CD', 'Electrique', 'Blanc', 4, ?, ?)")->execute([$id_tesla, $id_utilisateur]);
         $id_voiture = $db->lastInsertId();
-        echo "🚗 Voiture créée (Tesla Model 3).\n";
+        echo "Voiture créée (Tesla Model 3).\n";
     } else {
-        echo "ℹ️ Voiture Tesla déjà existante.\n";
+        echo "ℹVoiture Tesla déjà existante.\n";
     }
 
     // 2. Créer des trajets
