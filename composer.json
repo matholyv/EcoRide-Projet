@@ -1,0 +1,11 @@
+{
+    "name": "ecoride/app",
+    "description": "EcoRide - Covoiturage Écologique",
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    }
+}
