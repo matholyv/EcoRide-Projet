@@ -42,7 +42,7 @@ $pageTitle = $pageTitle ?? 'EcoRide - Covoiturage Écologique';
                                 $photoName = !empty($_SESSION['user']['photo']) ? $_SESSION['user']['photo'] : 'default_user.png';
                                 // Si c'est un chemin complet ou juste le nom, on normalise (hack rapide)
                                 if (strpos($photoName, '/') === false) {
-                                    $photoUrl = 'assets/uploads/' . $photoName;
+                                    $photoUrl = 'uploads/' . $photoName;
                                 } else {
                                     $photoUrl = $photoName; // Cas où c'est déjà un chemin (ex: assets/img/...)
                                 }

@@ -26,7 +26,9 @@ require_once __DIR__ . '/../templates/header.php';
         </div>
         <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #ff9800;">
             <div style="font-size: 0.9rem; color: #666; text-transform: uppercase; font-weight: 600;">Revenu Estimé (Crédits)</div>
-            <div style="font-size: 2.5rem; font-weight: bold; color: var(--dark-color);"><?= $stats['total_revenue'] ?? 0 ?> <span style="font-size:1rem;">pts</span></div>
+            <h2 style="font-size: 2.5rem; margin: 0; color: #ff9800;">
+                <?= number_format($stats['total_credits'], 0, ',', ' ') ?> <small style="font-size: 1rem; color: #666;">cr</small>
+            </h2>
         </div>
     </div>
 

@@ -25,6 +25,11 @@ require_once __DIR__ . '/templates/header.php';
             </div>
 
             <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="date_naissance" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Date de Naissance</label>
+                <input type="date" id="date_naissance" name="date_naissance" required class="form-input" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Mot de passe</label>
                 <input type="password" id="password" name="password" required class="form-input" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
                 <small style="color: #666; font-size: 0.8rem;">Min. 8 caractères, 1 Maj, 1 Min, 1 Chiffre, 1 Caractère spécial.</small>

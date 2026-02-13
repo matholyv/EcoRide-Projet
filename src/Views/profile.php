@@ -53,7 +53,7 @@ require_once __DIR__ . '/templates/header.php';
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <?php 
-                        $photoUrl = !empty($user['photo']) ? 'assets/uploads/' . $user['photo'] : 'assets/img/default_user.png';
+                        $photoUrl = !empty($user['photo']) ? 'uploads/' . $user['photo'] : 'assets/img/default_user.png';
                     ?>
                     <img src="<?= htmlspecialchars($photoUrl) ?>" alt="Profil" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #eee;">
                     
@@ -120,7 +120,7 @@ require_once __DIR__ . '/templates/header.php';
                 <div style="position: relative; width: 120px; height: 120px; margin: 0 auto;">
                     <!-- L'image de prévisualisation (cliquable) -->
                     <img id="photo-preview" 
-                         src="<?= !empty($user['photo']) ? 'assets/uploads/' . htmlspecialchars($user['photo']) : 'assets/img/default_user.png' ?>" 
+                         src="<?= !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo']) : 'assets/img/default_user.png' ?>" 
                          alt="Aperçu"
                          onclick="document.getElementById('photo-input').click();"
                          style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;">

@@ -40,15 +40,15 @@ try {
     $today = date('Y-m-d');
     
     // Trajet 1: Paris -> Lyon
-    $sql = "INSERT INTO covoiturage (date_depart, heure_depart, date_arrivee, heure_arrivee, lieu_depart, lieu_arrivee, nb_place, prix_personne, est_ecologique, id_conducteur, id_voiture, statut) 
-            VALUES (:date, '08:00', :date, '12:30', 'Paris', 'Lyon', 3, 45, 1, :conducteur, :voiture, 'PLANIFIÉ')";
+    $sql = "INSERT INTO covoiturage (date_depart, heure_depart, date_arrivee, heure_arrivee, lieu_depart, adresse_depart, lieu_arrivee, adresse_arrivee, nb_place, prix_personne, est_ecologique, id_conducteur, id_voiture, statut) 
+            VALUES (:date, '08:00', :date, '12:30', 'Paris', 'Gare de Lyon, Hall 1', 'Lyon', 'Parking Place Bellecour', 3, 45, 1, :conducteur, :voiture, 'PLANIFIÉ')";
     $stmt = $db->prepare($sql);
     $stmt->execute([':date' => $today, ':voiture' => $id_voiture, ':conducteur' => $id_utilisateur]);
     echo "Trajet Paris -> Lyon créé.\n";
 
     // Trajet 2: Lyon -> Marseille
-    $sql = "INSERT INTO covoiturage (date_depart, heure_depart, date_arrivee, heure_arrivee, lieu_depart, lieu_arrivee, nb_place, prix_personne, est_ecologique, id_conducteur, id_voiture, statut) 
-            VALUES (:date, '14:00', :date, '17:45', 'Lyon', 'Marseille', 2, 30, 1, :conducteur, :voiture, 'PLANIFIÉ')";
+    $sql = "INSERT INTO covoiturage (date_depart, heure_depart, date_arrivee, heure_arrivee, lieu_depart, adresse_depart, lieu_arrivee, adresse_arrivee, nb_place, prix_personne, est_ecologique, id_conducteur, id_voiture, statut) 
+            VALUES (:date, '14:00', :date, '17:45', 'Lyon', 'Parking Place Bellecour', 'Marseille', 'Gare Saint-Charles', 2, 30, 1, :conducteur, :voiture, 'PLANIFIÉ')";
     $stmt = $db->prepare($sql);
     $stmt->execute([':date' => $today, ':voiture' => $id_voiture, ':conducteur' => $id_utilisateur]);
     echo "Trajet Lyon -> Marseille créé.\n";

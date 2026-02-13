@@ -4,12 +4,15 @@ require_once __DIR__ . '/../templates/header.php';
 ?>
 
 <main class="container" style="padding: 2rem 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h1 style="color: var(--primary-color);">Gestion des Litiges</h1>
-        <div style="display: flex; gap: 10px;">
-            <a href="index.php?page=employee_reviews" class="btn-secondary" style="background: #eee; color: #333;">Modération Avis</a>
-            <a href="index.php?page=employee_disputes" class="btn-cta" style="background: var(--primary-color);">Dossiers Litiges</a>
-        </div>
+    <h1 style="color: var(--primary-color); margin-bottom: 1.5rem;">Gestion des Litiges</h1>
+    
+    <div style="display: flex; gap: 20px; margin-bottom: 2rem; border-bottom: 2px solid #eee; padding-bottom: 1px;">
+        <a href="index.php?page=employee_reviews" style="padding: 10px 20px; text-decoration: none; color: #666; font-weight: 500;">
+            📝 Valider Avis
+        </a>
+        <a href="index.php?page=employee_disputes" style="padding: 10px 20px; text-decoration: none; color: #d32f2f; border-bottom: 3px solid #d32f2f; font-weight: bold;">
+            ⚖️ Gérer Litiges (Actif)
+        </a>
     </div>
 
     <!-- Alertes de succès/erreur -->
@@ -49,19 +52,29 @@ require_once __DIR__ . '/../templates/header.php';
                         <strong>Plainte :</strong> "<?= nl2br(htmlspecialchars($d['commentaire'])) ?>"
                     </div>
                     
-                    <div style="display: flex; gap: 10px;">
-                        <a href="index.php?page=employee_resolve_conflict&id=<?= $d['id_avis'] ?>&decision=refund" 
+                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                        <!-- Boutons CONTACTER (MailTo pré-rempli) -->
+                        <a href="mailto:<?= htmlspecialchars($d['email_auteur']) ?>?subject=EcoRide - Litige #<?= $d['id_avis'] ?>&body=Bonjour <?= htmlspecialchars($d['auteur']) ?>," 
+                           class="btn-secondary" style="flex: 1; text-align: center; border: 1px solid #ccc; background: white; color: #333; text-decoration: none; padding: 10px;">
+                           ✉️ Contacter Passager
+                        </a>
+                        <a href="mailto:<?= htmlspecialchars($d['email_destinataire']) ?>?subject=EcoRide - Litige #<?= $d['id_avis'] ?>&body=Bonjour <?= htmlspecialchars($d['destinataire']) ?>," 
+                           class="btn-secondary" style="flex: 1; text-align: center; border: 1px solid #ccc; background: white; color: #333; text-decoration: none; padding: 10px;">
+                           ✉️ Contacter Conducteur
+                        </a>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button onclick="openConfirmModal('index.php?page=employee_resolve_conflict&id=<?= $d['id_avis'] ?>&decision=refund', 'Rembourser le passager ?\nLe conducteur ne recevra rien.')" 
                            class="btn-cta" 
-                           style="flex: 1; text-align: center; background-color: #ef6c00;"
-                           onclick="return confirm('Confirmer le remboursement du passager ?\nLe conducteur ne recevra rien.');">
+                           style="flex: 1; text-align: center; background-color: #ef6c00; border: none; cursor: pointer; padding: 10px; color: white; font-size: 1rem;">
                            ↩️ Rembourser Passager
-                        </a>
-                        <a href="index.php?page=employee_resolve_conflict&id=<?= $d['id_avis'] ?>&decision=pay" 
+                        </button>
+                        <button onclick="openConfirmModal('index.php?page=employee_resolve_conflict&id=<?= $d['id_avis'] ?>&decision=pay', 'Payer le conducteur ?\nLa plainte sera classée sans suite.')" 
                            class="btn-cta" 
-                           style="flex: 1; text-align: center; background-color: #2e7d32;"
-                           onclick="return confirm('Confirmer le paiement au conducteur ?\nLa plainte sera classée sans suite.');">
+                           style="flex: 1; text-align: center; background-color: #2e7d32; border: none; cursor: pointer; padding: 10px; color: white; font-size: 1rem;">
                            💰 Payer Conducteur
-                        </a>
+                        </button>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -100,5 +113,38 @@ require_once __DIR__ . '/../templates/header.php';
     </table>
 
 </main>
+
+<!-- Modale de confirmation (Style Windows modernisé) -->
+<div id="confirmationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:white; padding:2rem; border-radius:12px; width:90%; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.2s ease-out;">
+        <h3 style="margin-top:0; color:var(--dark-color); margin-bottom: 1rem;">Confirmation</h3>
+        <p id="modalMessage" style="color:#666; margin-bottom:2rem; font-size: 1.1rem; line-height: 1.5;"></p>
+        
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <button onclick="closeModal()" style="padding:10px 20px; border:1px solid #ccc; background:white; border-radius:5px; cursor:pointer; font-size:1rem;">Annuler</button>
+            <a id="confirmBtn" href="#" style="padding:10px 20px; background:var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer; text-decoration:none; font-size:1rem; font-weight:bold;">Confirmer</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function openConfirmModal(url, message) {
+    document.getElementById('modalMessage').innerText = message;
+    document.getElementById('confirmBtn').href = url;
+    document.getElementById('confirmationModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('confirmationModal').style.display = 'none';
+}
+
+// Fermer si clic en dehors
+window.onclick = function(event) {
+    var modal = document.getElementById('confirmationModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/../templates/footer.php'; ?>

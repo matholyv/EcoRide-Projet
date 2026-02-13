@@ -16,7 +16,7 @@ class HomeController {
     public function search() {
         $depart = $_GET['depart'] ?? '';
         $arrivee = $_GET['arrivee'] ?? '';
-        $date = $_GET['date'] ?? date('Y-m-d');
+        $date = !empty($_GET['date']) ? $_GET['date'] : date('Y-m-d');
         
         $filters = [
             'eco' => $_GET['eco'] ?? null,

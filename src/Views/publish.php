@@ -14,13 +14,15 @@ require_once __DIR__ . '/templates/header.php';
 
         <form action="index.php?page=publish" method="POST">
             <div class="form-group" style="margin-bottom: 1rem;">
-                <label style="font-weight: 500;">Lieu de départ</label>
+                <label style="font-weight: 500;">Lieu de départ (Ville pour la recherche)</label>
                 <input type="text" name="depart" required class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" placeholder="Ex: Paris">
+                <input type="text" name="adresse_depart" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;" placeholder="Adresse précise (Ex: 12 Rue de Rivoli, devant la Poste)">
             </div>
             
             <div class="form-group" style="margin-bottom: 1rem;">
-                <label style="font-weight: 500;">Lieu d'arrivée</label>
+                <label style="font-weight: 500;">Lieu d'arrivée (Ville pour la recherche)</label>
                 <input type="text" name="arrivee" required class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" placeholder="Ex: Lyon">
+                <input type="text" name="adresse_arrivee" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;" placeholder="Adresse précise (Ex: Gare Part-Dieu, Sortie Vivier Merle)">
             </div>
             
             <div style="display: flex; gap: 15px; margin-bottom: 1rem;">

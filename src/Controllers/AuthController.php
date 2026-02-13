@@ -62,9 +62,17 @@ class AuthController {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirm = $_POST['password_confirm'] ?? '';
+        $dateNaissance = $_POST['date_naissance'] ?? null;
 
-        if (empty($pseudo) || empty($email) || empty($password)) {
+        if (empty($pseudo) || empty($email) || empty($password) || empty($dateNaissance)) {
             header('Location: index.php?page=register&error=Tous les champs sont requis&pseudo=' . urlencode($pseudo) . '&email=' . urlencode($email));
+            exit;
+        }
+        
+        // Vérification Age (Optionnel : > 18 ans)
+        $age = (new DateTime())->diff(new DateTime($dateNaissance))->y;
+        if ($age < 18) {
+            header('Location: index.php?page=register&error=Vous devez avoir au moins 18 ans pour vous inscrire&pseudo=' . urlencode($pseudo) . '&email=' . urlencode($email));
             exit;
         }
 
@@ -102,15 +110,16 @@ class AuthController {
         // Hachage du mot de passe
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        // Insertion avec crédits dynamiques (US 7) et rôle Utilisateur (ID 2 généralement)
-        $creditsInit = \Database::getGlobalParam('credits_inscription', 20);
-        $sql = "INSERT INTO utilisateur (pseudo, email, password, credits, id_role) VALUES (?, ?, ?, ?, 2)";
+        // Insertion avec crédits dynamiques (US 7) et rôle Utilisateur (2)
+        // Ajout de la date de naissance
+        // Si le paramètre n'existe pas en base, on donne 20 par défaut.
+        $creditsInit = \Database::getGlobalParam('credits_inscription', 20); 
+
+        $sql = "INSERT INTO utilisateur (pseudo, email, password, date_naissance, credits, id_role) VALUES (?, ?, ?, ?, ?, 2)";
         $stmt = $conn->prepare($sql);
         
-        if ($stmt->execute([$pseudo, $email, $hashedPassword, $creditsInit])) {
-            // Connexion automatique après inscription ? Ou redirection login ?
-            // Le PDF ne précise pas, mais c'est mieux de rediriger vers login pour confirmer.
-            header('Location: index.php?page=login&success=Compte créé avec succès ! Vous avez ' . $creditsInit . ' crédits.');
+        if ($stmt->execute([$pseudo, $email, $hashedPassword, $dateNaissance, $creditsInit])) {
+            header('Location: index.php?page=login&success=Compte créé avec succès ! Connectez-vous.');
         } else {
             header('Location: index.php?page=register&error=Erreur technique lors de la création');
         }

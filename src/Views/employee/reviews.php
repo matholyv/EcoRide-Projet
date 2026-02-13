@@ -4,12 +4,15 @@ require_once __DIR__ . '/../templates/header.php';
 ?>
 
 <main class="container" style="padding: 2rem 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <h1 style="color: var(--primary-color);">Espace Modération</h1>
-        <div style="display: flex; gap: 10px;">
-            <a href="index.php?page=employee_reviews" class="btn-cta" style="background: var(--primary-color);">Valider Avis</a>
-            <a href="index.php?page=employee_disputes" class="btn-secondary" style="background: #eee; color: #333; padding: 0.5rem 1rem; border-radius: 5px;">Gérer Litiges</a>
-        </div>
+    <h1 style="color: var(--primary-color); margin-bottom: 1.5rem;">Espace Modération</h1>
+    
+    <div style="display: flex; gap: 20px; margin-bottom: 2rem; border-bottom: 2px solid #eee; padding-bottom: 1px;">
+        <a href="index.php?page=employee_reviews" style="padding: 10px 20px; text-decoration: none; color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold;">
+            📝 Valider Avis
+        </a>
+        <a href="index.php?page=employee_disputes" style="padding: 10px 20px; text-decoration: none; color: #666; font-weight: 500;">
+            ⚖️ Gérer Litiges
+        </a>
     </div>
 
     <h2>Avis en attente de validation (<?= count($avis) ?>)</h2>

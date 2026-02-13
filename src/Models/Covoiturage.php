@@ -18,8 +18,8 @@ class Covoiturage {
         $fumeur = isset($filters['fumeur']) && $filters['fumeur'] == 'on';
         $animaux = isset($filters['animaux']) && $filters['animaux'] == 'on';
 
-        // Fonction helper locale pour construire la requête
-        $buildQuery = function($dateOperator = "=") use ($eco, $fumeur, $animaux, $noteMin) {
+        
+        $buildQuery = function($dateOperator = "=") use ($eco, $fumeur, $animaux, $noteMin, $filters) {
             $query = "SELECT c.*, v.modele, m.libelle as marque, u.pseudo, u.photo, u.pref_fumeur, u.pref_animaux,
                       (SELECT AVG(note) FROM avis WHERE id_destinataire = u.id_utilisateur) as note_moyenne
                       FROM " . $this->table . " c
@@ -45,7 +45,7 @@ class Covoiturage {
             if ($fumeur) $query .= " AND u.pref_fumeur = 1";
             if ($animaux) $query .= " AND u.pref_animaux = 1";
 
-            // Filtres horaires (New)
+            // Filtres horaires 
             if (!empty($filters['heure_depart_min'])) {
                 $query .= " AND c.heure_depart >= :heure_depart_min";
             }
@@ -76,7 +76,7 @@ class Covoiturage {
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 2. Si aucun résultat, recherche élargie (US 3)
+        // 2. Si aucun résultat, recherche élargie 
         if (empty($results)) {
             $stmt = $this->conn->prepare($buildQuery('NEARBY'));
             $stmt->bindParam(':depart', $departLike);
@@ -85,6 +85,8 @@ class Covoiturage {
             $stmt->bindParam(':prixMax', $prixMax);
             $stmt->bindParam(':dureeMax', $dureeMax);
             if ($noteMin > 0) $stmt->bindParam(':noteMin', $noteMin);
+            if (!empty($filters['heure_depart_min'])) $stmt->bindParam(':heure_depart_min', $filters['heure_depart_min']);
+            if (!empty($filters['heure_arrivee_max'])) $stmt->bindParam(':heure_arrivee_max', $filters['heure_arrivee_max']);
             
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -114,7 +116,7 @@ class Covoiturage {
     }
 
     // US 9: Créer un trajet
-    public function create($id_conducteur, $depart, $arrivee, $date, $heure, $date_arrivee, $heure_arrivee, $prix, $places, $id_voiture) {
+    public function create($id_conducteur, $depart, $arrivee, $date, $heure, $date_arrivee, $heure_arrivee, $prix, $places, $id_voiture, $adresse_depart = null, $adresse_arrivee = null) {
         // 1. Vérifier si la voiture est écologique
         try {
             $checkSql = "SELECT energie FROM voiture WHERE id_voiture = ?";
@@ -131,8 +133,8 @@ class Covoiturage {
         }
 
         $query = "INSERT INTO " . $this->table . " 
-                  (date_depart, heure_depart, date_arrivee, heure_arrivee, lieu_depart, lieu_arrivee, nb_place, prix_personne, id_conducteur, id_voiture, statut, est_ecologique)
-                  VALUES (:date, :heure, :date_arrivee, :heure_arrivee, :depart, :arrivee, :places, :prix, :conducteur, :voiture, 'PLANIFIÉ', :est_ecologique)";
+                  (date_depart, heure_depart, date_arrivee, heure_arrivee, lieu_depart, adresse_depart, lieu_arrivee, adresse_arrivee, nb_place, prix_personne, id_conducteur, id_voiture, statut, est_ecologique)
+                  VALUES (:date, :heure, :date_arrivee, :heure_arrivee, :depart, :adresse_depart, :arrivee, :adresse_arrivee, :places, :prix, :conducteur, :voiture, 'PLANIFIÉ', :est_ecologique)";
         
         $stmt = $this->conn->prepare($query);
         
@@ -141,7 +143,9 @@ class Covoiturage {
         $stmt->bindParam(':date_arrivee', $date_arrivee);
         $stmt->bindParam(':heure_arrivee', $heure_arrivee);
         $stmt->bindParam(':depart', $depart);
+        $stmt->bindParam(':adresse_depart', $adresse_depart);
         $stmt->bindParam(':arrivee', $arrivee);
+        $stmt->bindParam(':adresse_arrivee', $adresse_arrivee);
         $stmt->bindParam(':places', $places);
         $stmt->bindParam(':prix', $prix);
         $stmt->bindParam(':conducteur', $id_conducteur);
@@ -155,7 +159,7 @@ class Covoiturage {
     public function getById($id) {
         $query = "SELECT c.*, 
                          v.modele, m.libelle as marque, v.energie, v.couleur, NULL as voiture_photo,
-                         u.pseudo, u.photo as conducteur_photo, u.date_naissance,
+                         u.pseudo, u.photo as conducteur_photo, u.date_naissance, u.pref_fumeur, u.pref_animaux,
                          (SELECT AVG(note) FROM avis WHERE id_destinataire = u.id_utilisateur) as note_conducteur
                   FROM " . $this->table . " c
                   JOIN voiture v ON c.id_voiture = v.id_voiture
@@ -169,6 +173,8 @@ class Covoiturage {
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+
 
     // US 6: Participer (Réserver)
     public function participer($id_covoiturage, $id_passager) {
@@ -310,7 +316,7 @@ class Covoiturage {
 
             // 2. Traitement selon incident ou succès
             if (!$is_incident) {
-                // CAS SUCCÈS : On paie le chauffeur
+                // CAS SUCCÈS 
                 $commission = \Database::getGlobalParam('commission_trajet', 2);
                 $gain_conducteur = max(0, $infos['prix_personne'] - $commission);
                 
@@ -326,7 +332,7 @@ class Covoiturage {
                     $avis_statut = 'EN_ATTENTE'; // Mauvaise note => Modération requise
                 }
             } else {
-                // CAS LITIGE : On NE paie PAS
+                // CAS LITIGE
                 $nouveau_statut = 'LITIGE';
                 $avis_statut = 'LITIGE'; // Statut spécial à traiter en priorité
                 $note = 0; 
@@ -353,7 +359,7 @@ class Covoiturage {
     // US 11: Récupérer les participants d'un trajet
     public function getParticipants($idCovoiturage) {
         $stmt = $this->conn->prepare("
-            SELECT u.pseudo, u.bio, u.photo, p.statut
+            SELECT u.id_utilisateur, u.email, u.pseudo, u.bio, u.photo, p.statut
             FROM participation p
             JOIN utilisateur u ON p.id_passager = u.id_utilisateur
             WHERE p.id_covoiturage = ?

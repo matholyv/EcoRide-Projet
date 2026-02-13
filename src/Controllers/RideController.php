@@ -13,6 +13,8 @@ class RideController {
             
             $depart = $_POST['depart'];
             $arrivee = $_POST['arrivee'];
+            $adresse_depart = $_POST['adresse_depart'];
+            $adresse_arrivee = $_POST['adresse_arrivee'];
             $date = $_POST['date'];
             $heure = $_POST['heure'];
             
@@ -25,7 +27,7 @@ class RideController {
             $user_id = $_SESSION['user']['id'];
             
             $model = new Covoiturage();
-            $success = $model->create($user_id, $depart, $arrivee, $date, $heure, $date_arrivee, $heure_arrivee, $prix, $places, $voiture_id);
+            $success = $model->create($user_id, $depart, $arrivee, $date, $heure, $date_arrivee, $heure_arrivee, $prix, $places, $voiture_id, $adresse_depart, $adresse_arrivee);
             
             if ($success) {
                 header('Location: index.php?success=trajet_cree');
@@ -145,6 +147,49 @@ class RideController {
         require_once __DIR__ . '/../Models/Covoiturage.php';
         $model = new Covoiturage();
         $res = $model->endRide($_GET['id'], $_SESSION['user']['id']);
+        
+        // Envoi de mail aux passagers pour valider
+        if ($res === true) {
+            $participants = $model->getParticipants($_GET['id']);
+            $rideDetails = $model->getById($_GET['id']); // Fetch ride details for email context
+
+            foreach ($participants as $p) {
+                $to = $p['email'];
+                $subject = "EcoRide - Trajet terminé ! Validez votre expérience";
+                
+                // Détection automatique du domaine (localhost ou votre-site.com)
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                $domainName = $_SERVER['HTTP_HOST'];
+                // On suppose que index.php est à la racine de public/
+                $baseUrl = $protocol . $domainName . dirname($_SERVER['SCRIPT_NAME']);
+                
+                $message = "Bonjour " . htmlspecialchars($p['pseudo']) . ",\n\n" .
+                           "Le trajet " . htmlspecialchars($rideDetails['lieu_depart']) . " -> " . htmlspecialchars($rideDetails['lieu_arrivee']) . " est terminé.\n" .
+                           "Pour débloquer les crédits du conducteur et laisser un avis, rendez-vous sur votre espace :\n" .
+                           $baseUrl . "?page=review&id=" . $_GET['id'] . "\n\n" .
+                           "L'équipe EcoRide.";
+                
+                // Headers pour l'email
+                $headers = 'From: no-reply@ecoride.com' . "\r\n" .
+                           'Reply-To: no-reply@ecoride.com' . "\r\n" .
+                           'X-Mailer: PHP/' . phpversion();
+
+                // 1. Tentative d'envoi réel (Fonctionnera chez l'hébergeur)
+                @mail($to, $subject, $message, $headers);
+
+                // 2. LOG pour débug (A conserver ou supprimer en production, peu importe)
+                $logContent = "---------------------------------------------------\n";
+                $logContent .= "DATE    : " . date('Y-m-d H:i:s') . "\n";
+                $logContent .= "DE      : no-reply@ecoride.com\n";
+                $logContent .= "À       : " . $to . "\n";
+                $logContent .= "SUJET   : " . $subject . "\n";
+                $logContent .= "LIEN    : " . $baseUrl . "?page=review&id=" . $_GET['id'] . "\n";
+                $logContent .= "MESSAGE :\n" . $message . "\n";
+                $logContent .= "---------------------------------------------------\n\n";
+                
+                file_put_contents(__DIR__ . '/../../emails.log', $logContent, FILE_APPEND);
+            }
+        }
         
         $msg = ($res === true) ? '&success=ended' : '&error=' . urlencode($res);
         header('Location: index.php?page=history&tab=driver' . $msg);

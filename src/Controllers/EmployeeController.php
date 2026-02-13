@@ -139,9 +139,10 @@ class EmployeeController {
                 $stmt = $conn->prepare("UPDATE utilisateur SET credits = credits + ? WHERE id_utilisateur = ?");
                 $stmt->execute([$gain, $info['id_destinataire']]);
                 
-                // Statut AVIS -> VALIDÉ (pour dire traité, peut-être faudrait-il un statut RÉSOLU ?)
-                // Disons VALIDÉ pour simplifier le flux.
-                $stmt = $conn->prepare("UPDATE avis SET statut = 'VALIDÉ', note = 0 WHERE id_avis = ?");
+                // Statut AVIS -> REFUSÉ (Important : on cache l'avis 0/5 car le conducteur n'est pas en tort)
+                $query = "UPDATE avis SET statut = 'REFUSÉ', note = 0 WHERE id_avis = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$id_avis]);
                 
             } elseif ($decision === 'refund') {
                 // Rembourser le passager (Auteur de l'avis/litige)
