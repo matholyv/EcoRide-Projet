@@ -10,23 +10,35 @@ class Database {
     public function getConnection() {
         $this->conn = null;
 
-        $this->host = getenv('MYSQLHOST') ?: '127.0.0.1';
-        $this->db_name = getenv('MYSQLDATABASE') ?: 'railway';
-        $this->username = getenv('MYSQLUSER') ?: 'root';
-        $this->password = getenv('MYSQLPASSWORD') ?: '';
-        $this->port = getenv('MYSQLPORT') ?: '3306';
+        // DÉTECTION DE L'ENVIRONNEMENT (Railway vs Local)
+        if (getenv('MYSQLHOST')) {
+            // Configuration RAILWAY (Production)
+            $this->host = getenv('MYSQLHOST');
+            $this->db_name = getenv('MYSQLDATABASE');
+            $this->username = getenv('MYSQLUSER');
+            $this->password = getenv('MYSQLPASSWORD');
+            $this->port = getenv('MYSQLPORT') ?: 3306;
+        } else {
+            // Configuration LOCALE (Wamp/Xampp)
+            $this->host = "127.0.0.1";
+            $this->db_name = "ecoride"; // Remettez le nom de votre base locale ici
+            $this->username = "root";
+            $this->password = "";
+            $this->port = 3306;
+        }
 
         try {
             $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name . ";charset=utf8mb4";
             
             $this->conn = new PDO($dsn, $this->username, $this->password);
-            
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            
+            $this->conn->exec("set names utf8mb4");
+
         } catch(PDOException $exception) {
+            // Affiche l'erreur complète pour aider au débogage (à retirer en prod si sensible)
             die("Erreur de connexion SQL : " . $exception->getMessage() . 
-                " (Host: " . $this->host . ", DB: " . $this->db_name . ")");
+                " <br> (Host: " . $this->host . ", DB: " . $this->db_name . ")");
         }
 
         return $this->conn;
