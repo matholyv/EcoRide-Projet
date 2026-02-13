@@ -129,6 +129,10 @@ switch ($page) {
         if ($page === 'contact') $controller->contact();
         elseif ($page === 'contact_action') $controller->contactAction();
         break;
+
+    case 'mentions':
+        require_once __DIR__ . '/../src/Views/mentions.php';
+        break;
         
     case 'detail':
         $controller = new RideController();

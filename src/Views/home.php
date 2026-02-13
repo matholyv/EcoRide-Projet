@@ -63,6 +63,13 @@ ob_start();
         gap: 2rem;
         margin-top: 3rem;
     }
+
+    /* Centre la derniÃ¨re carte si elle est seule sur sa ligne */
+    .features > .feature-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        max-width: 400px;
+        margin: 0 auto;
+    }
     
     .feature-card {
         background: white;
@@ -131,7 +138,7 @@ require_once __DIR__ . '/templates/header.php';
             </div>
             
             <div style="margin-top: 4rem; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; justify-content: center;">
-                <img src="https://placehold.co/400x250/eee/333?text=Voyage+EcoRide" alt="Voyage EcoRide" style="border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 100%;">
+                <img src="assets/img/beautiful-landscape-bamboo-grove-forest-arashiyama-kyoto.jpg" alt="Voyage EcoRide" style="border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 100%; width: 400px; height: 250px; object-fit: cover;">
                 <div style="max-width: 400px; text-align: left;">
                     <h3>Une nouvelle façon de voyager</h3>
                     <p style="color: #555; line-height: 1.6;">

@@ -127,8 +127,8 @@ require_once __DIR__ . '/templates/header.php';
                 <input type="number" name="prixMax" placeholder="Pas de limite" min="0" value="<?= htmlspecialchars($_GET['prixMax'] ?? '') ?>" style="width:100%; padding:5px; margin-bottom: 1rem; border:1px solid #ddd; border-radius:5px;">
                 <br>
 
-                <label>Durée max : <span id="duree-val"><?= isset($_GET['dureeMax']) ? floor($_GET['dureeMax']/60).'h '.($_GET['dureeMax']%60).'m' : '10h 00m' ?></span></label>
-                <input type="range" name="dureeMax" min="30" max="1440" step="30" value="<?= htmlspecialchars($_GET['dureeMax'] ?? 600) ?>" 
+                <label>Durée max : <span id="duree-val"><?= isset($_GET['dureeMax']) ? floor($_GET['dureeMax']/60).'h '.($_GET['dureeMax']%60).'m' : '24h 00m' ?></span></label>
+                <input type="range" name="dureeMax" min="30" max="1440" step="30" value="<?= htmlspecialchars($_GET['dureeMax'] ?? 1440) ?>" 
                        oninput="let h = Math.floor(this.value/60); let m = this.value%60; document.getElementById('duree-val').innerText = h + 'h ' + (m<10?'0':'') + m + 'm'">
                 <br><br>
                 

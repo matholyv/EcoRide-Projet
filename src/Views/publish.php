@@ -82,4 +82,37 @@ require_once __DIR__ . '/templates/header.php';
     </div>
 </main>
 
+<script>
+    // Petit script de sauvegarde automatique (Auto-Save)
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input, select');
+        const storageKey = 'ecoride_publish_draft';
+
+        // 1. Restaurer les valeurs si elles existent
+        const savedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        if (savedData) {
+            inputs.forEach(input => {
+                if (input.name && savedData[input.name]) {
+                    input.value = savedData[input.name];
+                }
+            });
+        }
+
+        // 2. Sauvegarder à chaque modification
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const currentData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                currentData[input.name] = input.value;
+                localStorage.setItem(storageKey, JSON.stringify(currentData));
+            });
+        });
+
+        // 3. Nettoyer après envoi réussi
+        form.addEventListener('submit', () => {
+            localStorage.removeItem(storageKey);
+        });
+    });
+</script>
+
 <?php require_once __DIR__ . '/templates/footer.php'; ?>

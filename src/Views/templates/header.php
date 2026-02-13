@@ -39,19 +39,30 @@ $pageTitle = $pageTitle ?? 'EcoRide - Covoiturage Écologique';
                         
                         <div class="user-menu" style="position: relative; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                             <?php 
-                                $photoName = !empty($_SESSION['user']['photo']) ? $_SESSION['user']['photo'] : 'default_user.png';
-                                // Si c'est un chemin complet ou juste le nom, on normalise (hack rapide)
-                                if (strpos($photoName, '/') === false) {
-                                    $photoUrl = 'uploads/' . $photoName;
-                                } else {
-                                    $photoUrl = $photoName; // Cas où c'est déjà un chemin (ex: assets/img/...)
-                                }
-                                // Fallback si le fichier n'existe pas (optionnel mais propre)
-                                if (!file_exists(__DIR__ . '/../../../public/' . $photoUrl) && strpos($photoUrl, 'default') === false) {
-                                    $photoUrl = 'assets/img/default_user.png';
+                                // Gestion robuste de l'avatar
+                                $photoPath = $_SESSION['user']['photo'] ?? '';
+                                $pseudo = $_SESSION['user']['pseudo'] ?? 'User';
+                                
+                                // URL par défaut : Avatar généré avec les initiales (via ui-avatars.com)
+                                $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($pseudo) . "&background=random&color=fff&size=128";
+
+                                // Si une photo est définie en base
+                                if (!empty($photoPath)) {
+                                    // On vérifie si c'est une URL externe (ex: http...) ou un fichier local
+                                    if (filter_var($photoPath, FILTER_VALIDATE_URL)) {
+                                        $avatarUrl = $photoPath;
+                                    } 
+                                    // Sinon on regarde si le fichier existe dans public/uploads/
+                                    elseif (file_exists(__DIR__ . '/../../../public/uploads/' . $photoPath)) {
+                                        $avatarUrl = 'uploads/' . $photoPath;
+                                    }
+                                    // Ou peut-être directement dans public/ (pour les anciens chemins)
+                                    elseif (file_exists(__DIR__ . '/../../../public/' . $photoPath)) {
+                                        $avatarUrl = $photoPath;
+                                    }
                                 }
                             ?>
-                            <img src="<?= htmlspecialchars($photoUrl) ?>" alt="Profil" class="profile-pic" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                            <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Profil" class="profile-pic" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                             <span style="font-weight: 500; font-size: 0.95rem; display: none;"><?= htmlspecialchars($_SESSION['user']['pseudo']) ?></span> 
                             <!-- Pseudo masqué sur mobile/tablette si besoin, ou on le garde -->
                             <span class="user-name"><?= htmlspecialchars($_SESSION['user']['pseudo']) ?></span>

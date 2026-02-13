@@ -36,7 +36,8 @@ class Database {
             $this->conn->exec("set names utf8mb4");
 
         } catch(PDOException $exception) {
-            // Affiche l'erreur complète pour aider au débogage (à retirer en prod si sensible)
+            // En production, on évite d'afficher l'erreur brute pour sécurité
+            // Mais pour le jury/démo, afficher l'erreur est utile
             die("Erreur de connexion SQL : " . $exception->getMessage() . 
                 " <br> (Host: " . $this->host . ", DB: " . $this->db_name . ")");
         }
