@@ -1,11 +1,10 @@
 # Configuration pour forcer les extensions PHP sur Railway
 [phases.setup]
-# On demande explicitement PHP et le module MySQL
-nixPkgs = ["php81", "php81Extensions.pdo", "php81Extensions.pdo_mysql", "php81Extensions.mbstring", "composer"]
+# On demande juste les extensions, sans forcer la version php81 (Nixpacks choisira la stable)
+nixPkgs = ["php", "php81Extensions.pdo", "php81Extensions.pdo_mysql", "php81Extensions.mbstring", "composer"]
 
 [phases.build]
-cmds = ["composer install --no-dev --optimize-autoloader"]
+cmds = ["composer install --no-dev --optimize-autoloader --ignore-platform-reqs"]
 
 [start]
-# On lance le serveur PHP intégré (plus simple et compatible partout)
 cmd = "php -S 0.0.0.0:$PORT -t public"
