@@ -29,6 +29,11 @@ class ProfileController {
         $stmt = $conn->query("SELECT * FROM marque ORDER BY libelle");
         $marques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        // 4. Récupérer la note moyenne et le nombre d'avis
+        $stmt = $conn->prepare("SELECT AVG(note) as moyenne, COUNT(*) as total_avis FROM avis WHERE id_destinataire = ? AND statut = 'VALIDÉ'");
+        $stmt->execute([$userId]);
+        $reputation = $stmt->fetch(PDO::FETCH_ASSOC);
+
         require_once __DIR__ . '/../Views/profile.php';
     }
 

@@ -61,6 +61,21 @@ require_once __DIR__ . '/templates/header.php';
                         <h2 style="margin: 0; color: var(--primary-color);">
                             <?= htmlspecialchars(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? '')) ?>
                         </h2>
+                        
+                        <!-- Section Réputation -->
+                        <div style="margin-top: 5px; display: flex; align-items: center; gap: 10px;">
+                            <?php if (!empty($reputation['moyenne'])): ?>
+                                <span style="font-weight: bold; color: #fbc02d; font-size: 1.1rem;">
+                                    ⭐ <?= number_format($reputation['moyenne'], 1) ?> <span style="color: #666; font-size: 0.9rem;">/ 5</span>
+                                </span>
+                                <a href="index.php?page=driver_reviews&id=<?= $user['id_utilisateur'] ?>" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+                                    (<?= $reputation['total_avis'] ?> avis)
+                                </a>
+                            <?php else: ?>
+                                <span style="color: #999; font-size: 0.9rem; font-style: italic;">Aucun avis pour le moment</span>
+                            <?php endif; ?>
+                        </div>
+
                         <p style="color: #666; margin-top: 5px;">
                             <?= !empty($user['bio']) ? nl2br(htmlspecialchars($user['bio'])) : '<i>Aucune biographie renseignée.</i>' ?>
                         </p>

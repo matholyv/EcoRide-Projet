@@ -22,8 +22,15 @@ class AdminController {
         // Revenu total estimé (2 crédits par trajet terminé)
         $stats['total_revenue'] = $conn->query("SELECT COUNT(*) * 2 FROM covoiturage WHERE statut = 'TERMINÉ'")->fetchColumn();
         
-        // 2. Stats pour le Graphique (Trajets par jour sur les 7 derniers jours)
-        $sqlGraph = "SELECT date_depart, COUNT(*) as count 
+        // 2. Stats pour les Graphiques
+        // Récupérer la commission actuelle
+        $stmt = $conn->query("SELECT valeur FROM parametre WHERE propriete = 'commission_trajet'");
+        $commission = $stmt->fetchColumn() ?: 2; // Valeur par défaut 2
+
+        // Requête groupée pour les deux graphs
+        $sqlGraph = "SELECT date_depart, 
+                            COUNT(*) as count, 
+                            COUNT(*) * $commission as revenue 
                      FROM covoiturage 
                      WHERE date_depart >= DATE(NOW() - INTERVAL 7 DAY)
                      GROUP BY date_depart 

@@ -239,7 +239,8 @@ class Covoiturage {
     // US 10: Historique - Trajets en tant que Conducteur
     public function getRidesAsDriver($userId) {
         $query = "SELECT c.*, v.modele, m.libelle as marque,
-                         (SELECT COUNT(*) FROM participation p WHERE p.id_covoiturage = c.id_covoiturage) as nb_participants
+                         (SELECT COUNT(*) FROM participation p WHERE p.id_covoiturage = c.id_covoiturage AND p.statut != 'ANNULÉ') as nb_participants,
+                         (SELECT COUNT(*) FROM participation p WHERE p.id_covoiturage = c.id_covoiturage AND p.statut = 'LITIGE') as nb_litiges
                   FROM " . $this->table . " c
                   JOIN voiture v ON c.id_voiture = v.id_voiture
                   JOIN marque m ON v.id_marque = m.id_marque
@@ -456,5 +457,20 @@ class Covoiturage {
             $this->conn->rollBack();
             return "Erreur : " . $e->getMessage();
         }
+    }
+
+    // Helper pour les notifications (Badge Header)
+    public static function countPendingValidations($userId) {
+        $db = (new Database())->getConnection();
+        $stmt = $db->prepare("
+            SELECT COUNT(*) 
+            FROM participation p
+            JOIN covoiturage c ON p.id_covoiturage = c.id_covoiturage
+            WHERE p.id_passager = ? 
+            AND c.statut = 'TERMINÉ' 
+            AND p.statut = 'CONFIRMÉ'
+        ");
+        $stmt->execute([$userId]);
+        return $stmt->fetchColumn();
     }
 }

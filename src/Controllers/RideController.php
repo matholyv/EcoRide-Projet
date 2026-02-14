@@ -124,6 +124,14 @@ class RideController {
         
         $driverRides = $model->getRidesAsDriver($userId);
         $passengerRides = $model->getRidesAsPassenger($userId);
+
+        // NOUVEAU : Vérifier s'il y a des avis en attente (Trajet TERMINÉ mais Participation CONFIRMÉ)
+        $pendingReviews = [];
+        foreach ($passengerRides as $ride) {
+            if ($ride['statut'] === 'TERMINÉ' && $ride['statut_participation'] === 'CONFIRMÉ') {
+                $pendingReviews[] = $ride;
+            }
+        }
         
         require_once __DIR__ . '/../Views/history.php';
     }

@@ -43,26 +43,32 @@ $pageTitle = $pageTitle ?? 'EcoRide - Covoiturage Écologique';
                                 $photoPath = $_SESSION['user']['photo'] ?? '';
                                 $pseudo = $_SESSION['user']['pseudo'] ?? 'User';
                                 
-                                // URL par défaut : Avatar généré avec les initiales (via ui-avatars.com)
+                                // URL par défaut
                                 $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($pseudo) . "&background=random&color=fff&size=128";
 
-                                // Si une photo est définie en base
                                 if (!empty($photoPath)) {
-                                    // On vérifie si c'est une URL externe (ex: http...) ou un fichier local
-                                    if (filter_var($photoPath, FILTER_VALIDATE_URL)) {
-                                        $avatarUrl = $photoPath;
-                                    } 
-                                    // Sinon on regarde si le fichier existe dans public/uploads/
-                                    elseif (file_exists(__DIR__ . '/../../../public/uploads/' . $photoPath)) {
-                                        $avatarUrl = 'uploads/' . $photoPath;
-                                    }
-                                    // Ou peut-être directement dans public/ (pour les anciens chemins)
-                                    elseif (file_exists(__DIR__ . '/../../../public/' . $photoPath)) {
-                                        $avatarUrl = $photoPath;
+                                    if (filter_var($photoPath, FILTER_VALIDATE_URL)) { $avatarUrl = $photoPath; } 
+                                    elseif (file_exists(__DIR__ . '/../../../public/uploads/' . $photoPath)) { $avatarUrl = 'uploads/' . $photoPath; }
+                                    elseif (file_exists(__DIR__ . '/../../../public/' . $photoPath)) { $avatarUrl = $photoPath; }
+                                }
+
+                                // Calculer notifs ici
+                                $pendingCount = 0;
+                                if (isset($_SESSION['user']['id'])) {
+                                    if (class_exists('Covoiturage')) {
+                                        $pendingCount = Covoiturage::countPendingValidations($_SESSION['user']['id']);
+                                    } else {
+                                        require_once __DIR__ . '/../../Models/Covoiturage.php';
+                                        $pendingCount = Covoiturage::countPendingValidations($_SESSION['user']['id']);
                                     }
                                 }
                             ?>
-                            <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Profil" class="profile-pic" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                            <div style="position: relative;">
+                                <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="Profil" class="profile-pic" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                <?php if($pendingCount > 0): ?>
+                                    <span style="position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background-color: #d32f2f; border-radius: 50%; border: 2px solid white;"></span>
+                                <?php endif; ?>
+                            </div>
                             <span style="font-weight: 500; font-size: 0.95rem; display: none;"><?= htmlspecialchars($_SESSION['user']['pseudo']) ?></span> 
                             <!-- Pseudo masqué sur mobile/tablette si besoin, ou on le garde -->
                             <span class="user-name"><?= htmlspecialchars($_SESSION['user']['pseudo']) ?></span>
@@ -75,7 +81,25 @@ $pageTitle = $pageTitle ?? 'EcoRide - Covoiturage Écologique';
                                 <?php endif; ?>
                                 <a href="index.php?page=profile">Mon Profil</a>
                                 <a href="index.php?page=publish">Publier un trajet</a>
-                                <a href="index.php?page=history">Mes Trajets</a>
+                                
+                                <?php
+                                    // Notif badge
+                                    $pendingCount = 0;
+                                    if (class_exists('Covoiturage')) {
+                                        $pendingCount = Covoiturage::countPendingValidations($_SESSION['user']['id']);
+                                    } else {
+                                        // Fallback si la classe n'est pas chargée (rare mais possible selon l'include)
+                                        require_once __DIR__ . '/../../Models/Covoiturage.php';
+                                        $pendingCount = Covoiturage::countPendingValidations($_SESSION['user']['id']);
+                                    }
+                                ?>
+                                <a href="index.php?page=history" style="display: flex; justify-content: space-between; align-items: center;">
+                                    Mes Trajets
+                                    <?php if($pendingCount > 0): ?>
+                                        <span style="background: #d32f2f; color: white; padding: 2px 6px; border-radius: 50%; font-size: 0.75rem; font-weight: bold;"><?= $pendingCount ?></span>
+                                    <?php endif; ?>
+                                </a>
+
                                 <a href="index.php?page=logout" style="color: #e74c3c;">Déconnexion</a>
                             </div>
                         </div>

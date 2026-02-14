@@ -3,7 +3,7 @@ $pageTitle = 'Gestion des Litiges - Espace Employé';
 require_once __DIR__ . '/../templates/header.php';
 ?>
 
-<main class="container" style="padding: 2rem 0;">
+<main style="width: 95%; max-width: 1600px; margin: 0 auto; padding: 2rem 0;">
     <h1 style="color: var(--primary-color); margin-bottom: 1.5rem;">Gestion des Litiges</h1>
     
     <div style="display: flex; gap: 20px; margin-bottom: 2rem; border-bottom: 2px solid #eee; padding-bottom: 1px;">
@@ -35,17 +35,26 @@ require_once __DIR__ . '/../templates/header.php';
             Aucun litige signalé. Tout va bien ! 🎉
         </p>
     <?php else: ?>
-        <div style="display: grid; gap: 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; width: 100%;">
             <?php foreach ($disputes as $d): ?>
-                <div style="background: white; padding: 1.5rem; border-radius: 10px; border-left: 5px solid #d32f2f; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <div>
-                            <strong>Plaignant (Passager) :</strong> <?= htmlspecialchars($d['auteur']) ?> (<?= htmlspecialchars($d['email_auteur']) ?>)<br>
-                            <strong>Accusé (Conducteur) :</strong> <?= htmlspecialchars($d['destinataire']) ?> (<?= htmlspecialchars($d['email_destinataire']) ?>)
+                <div style="background: white; padding: 2rem; border-radius: 10px; border-left: 5px solid #d32f2f; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box;">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                        <div style="flex: 1; margin-right: 20px;">
+                            <strong>Plaignant (Passager) :</strong> <br><?= htmlspecialchars($d['auteur']) ?> (<?= htmlspecialchars($d['email_auteur']) ?>)<br>
+                            <span style="display:block; margin-top:5px;"><strong>Accusé (Conducteur) :</strong> <br><?= htmlspecialchars($d['destinataire']) ?> (<?= htmlspecialchars($d['email_destinataire']) ?>)</span>
                         </div>
-                        <div style="text-align: right;">
-                            <strong>Montant bloqué :</strong> <span style="font-size: 1.2rem; color: var(--primary-color);"><?= $d['prix_personne'] ?> Crédits</span>
+                        <div style="text-align: right; white-space: nowrap;">
+                            <strong>Montant bloqué :</strong><br> 
+                            <span style="font-size: 1.4rem; font-weight: bold; color: var(--primary-color); display: block; margin-top: 5px;"><?= $d['prix_personne'] ?> Crédits</span>
                         </div>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border: 1px solid #eee;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #555;">Info Trajet #<?= $d['id_covoiturage'] ?></h4>
+                        <p style="margin: 0;">
+                            <strong><?= htmlspecialchars($d['lieu_depart']) ?> ➝ <?= htmlspecialchars($d['lieu_arrivee']) ?></strong><br>
+                            📅 <?= date('d/m/Y', strtotime($d['date_depart'])) ?> à <?= date('H:i', strtotime($d['heure_depart'])) ?>
+                        </p>
                     </div>
                     
                     <div style="background: #fff3e0; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">

@@ -41,6 +41,10 @@ class EmployeeController {
         $sql = "SELECT a.*, 
                        u1.pseudo as auteur, u1.email as email_auteur,
                        u2.pseudo as destinataire, u2.email as email_destinataire,
+                       c.id_covoiturage,
+                       c.lieu_depart, c.lieu_arrivee,
+                       c.date_depart, c.heure_depart,
+                       c.date_arrivee, c.heure_arrivee,
                        c.prix_personne
                 FROM avis a
                 JOIN utilisateur u1 ON a.id_auteur = u1.id_utilisateur

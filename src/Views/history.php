@@ -101,13 +101,16 @@ require_once __DIR__ . '/templates/header.php';
                         <?php if($ride['statut'] == 'TERMINÉ'): ?>
                             <?php if($ride['statut_participation'] == 'VALIDÉ'): ?>
                                 <span style="color: green; font-size: 0.9rem;">✅ Validé</span>
+                            <?php elseif ($ride['statut'] === 'TERMINÉ' && $ride['statut_participation'] === 'CONFIRMÉ'): ?>
+                                    <a href="index.php?page=review&id=<?= $ride['id_covoiturage'] ?>" 
+                                       style="display: inline-block; background-color: var(--primary-color); color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; font-size: 0.9rem; transition: background 0.3s;">
+                                       ⭐ Valider le trajet
+                                    </a>
                             <?php elseif($ride['statut_participation'] == 'LITIGE'): ?>
                                 <span style="color: #d32f2f; font-size: 0.9rem;">⚠ Litige signalé</span>
                             <?php elseif($ride['statut_participation'] == 'REMBOURSÉ'): ?>
                                 <span style="color: #d32f2f; font-size: 0.9rem;">↩️ Remboursé</span>
                             <?php else: ?>
-                                <a href="index.php?page=review&id=<?= $ride['id_covoiturage'] ?>" class="btn-secondary" style="font-size: 0.9rem; padding: 5px 10px; border-radius: 4px;">
-                                   Valider le trajet
                                 </a>
                             <?php endif; ?>
                         <?php elseif($ride['statut'] == 'PLANIFIÉ' && $ride['statut_participation'] != 'ANNULÉ'): ?>
@@ -149,6 +152,9 @@ require_once __DIR__ . '/templates/header.php';
                              <span class="status-badge status-<?= strtolower($ride['statut'] == 'EN COURS' ? 'cours' : ($ride['statut'] == 'TERMINÉ' ? 'termine' : 'planifie')) ?>">
                                 <?= htmlspecialchars($ride['statut']) ?>
                             </span>
+                            <?php if(isset($ride['nb_litiges']) && $ride['nb_litiges'] > 0): ?>
+                                <span style="color: #d32f2f; font-weight: bold; font-size: 0.85rem; margin-left: 5px;">⚠ <?= $ride['nb_litiges'] ?> Litige(s)</span>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div style="text-align: right;">
