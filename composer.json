@@ -1,6 +1,6 @@
 {
     "name": "ecoride/app",
-    "description": "EcoRide - Covoiturage Écologique",
+    "description": "EcoRide - Covoiturage Écologique - v1.0",
     "require": {
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
