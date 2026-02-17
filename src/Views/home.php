@@ -50,6 +50,15 @@ ob_start();
         border-radius: 8px;
         font-size: 1rem;
         font-family: var(--font-body);
+        appearance: none; /* Supprime le style natif iOS */
+        -webkit-appearance: none;
+    }
+    
+    /* Fix spécifique pour la date sur mobile */
+    input[type="date"], input[type="time"] {
+        text-align: left;
+        min-height: 52px; /* Hauteur cohérente avec les text inputs */
+        display: block;
     }
     
     .presentation {

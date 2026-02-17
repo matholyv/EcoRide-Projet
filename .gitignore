@@ -1,0 +1,14 @@
+
+# Logs
+*.log
+email.log
+
+# Dependencies
+vendor/
+node_modules/
+
+# Environment
+.env
+
+# MacOS
+.DS_Store

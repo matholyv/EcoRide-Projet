@@ -34,10 +34,12 @@ require_once __DIR__ . '/../templates/header.php';
 
     <!-- Graphique (Si US 6 demande un graph) -->
     <!-- On va simuler un graph avec des barres CSS simple pour l'instant -->
-    <!-- Graphique 1 : Covoiturages par jour -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+    <!-- Graphiques -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        
+        <!-- Graph 1: Nombre de Covoiturages -->
         <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <h2 style="margin-bottom: 2rem;">🚗 Covoiturages par jour</h2>
+            <h3 style="margin-bottom: 2rem; font-size: 1.2rem;">🚗 Covoiturages par jour</h3>
             <?php if(empty($graphData)): ?>
                 <p style="text-align:center; color:#666;">Pas assez de données.</p>
             <?php else: ?>
@@ -49,34 +51,34 @@ require_once __DIR__ . '/../templates/header.php';
                     ?>
                     <?php foreach($graphData as $d): ?>
                         <div style="text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%;">
-                            <div style="background: var(--secondary-color); width: 30px; border-radius: 5px 5px 0 0; transition: height 0.5s; height: <?= ($d['count'] / $maxVal) * 100 ?>%;">
-                                 <div style="color: white; font-weight: bold; padding-top: 5px; font-size: 0.8rem;"><?= $d['count'] ?></div>
+                            <div style="background: var(--primary-color); width: 30px; border-radius: 5px 5px 0 0; transition: height 0.5s; height: <?= ($d['count'] / $maxVal) * 100 ?>%;">
+                                 <div style="color: white; font-weight: bold; padding-top: 5px; font-size: 0.7rem;"><?= $d['count'] ?></div>
                             </div>
-                            <div style="margin-top: 10px; font-size: 0.8rem; color: #666;"><?= date('d/m', strtotime($d['date_depart'])) ?></div>
+                            <div style="margin-top: 10px; font-size: 0.7rem; color: #666;"><?= date('d/m', strtotime($d['date_depart'])) ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </div>
 
-        <!-- Graphique 2 : Revenus par jour -->
+        <!-- Graph 2: Revenus (Crédits) -->
         <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <h2 style="margin-bottom: 2rem;">💰 Revenus (Crédits) par jour</h2>
-            <?php if(empty($graphData)): ?>
-                <p style="text-align:center; color:#666;">Pas assez de données.</p>
+            <h3 style="margin-bottom: 2rem; font-size: 1.2rem; color: #ff9800;">💰 Revenus Crédits (Gains)</h3>
+            <?php if(empty($revenueGraphData)): ?>
+                <p style="text-align:center; color:#666;">Pas assez de données (Trajets Terminés).</p>
             <?php else: ?>
                 <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 200px; padding-top: 20px;">
                     <?php 
                         $maxRev = 0;
-                        foreach($graphData as $d) if($d['revenue'] > $maxRev) $maxRev = $d['revenue'];
+                        foreach($revenueGraphData as $r) if($r['revenue'] > $maxRev) $maxRev = $r['revenue'];
                         if($maxRev == 0) $maxRev = 1; 
                     ?>
-                    <?php foreach($graphData as $d): ?>
+                    <?php foreach($revenueGraphData as $r): ?>
                         <div style="text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%;">
-                            <div style="background: #ff9800; width: 30px; border-radius: 5px 5px 0 0; transition: height 0.5s; height: <?= ($d['revenue'] / $maxRev) * 100 ?>%;">
-                                 <div style="color: white; font-weight: bold; padding-top: 5px; font-size: 0.8rem;"><?= number_format($d['revenue'], 0) ?></div>
+                            <div style="background: #ff9800; width: 30px; border-radius: 5px 5px 0 0; transition: height 0.5s; height: <?= ($r['revenue'] / $maxRev) * 100 ?>%;">
+                                 <div style="color: white; font-weight: bold; padding-top: 5px; font-size: 0.7rem;"><?= $r['revenue'] ?></div>
                             </div>
-                            <div style="margin-top: 10px; font-size: 0.8rem; color: #666;"><?= date('d/m', strtotime($d['date_depart'])) ?></div>
+                            <div style="margin-top: 10px; font-size: 0.7rem; color: #666;"><?= date('d/m', strtotime($r['date_depart'])) ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>

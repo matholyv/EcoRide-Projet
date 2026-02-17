@@ -16,11 +16,15 @@ class AdminController {
         $conn = $db->getConnection();
         
         // 1. Stats KPI (Chiffres clés)
-        $stats = [];
+        $stats = [
+            'nb_users' => 0,
+            'nb_rides' => 0,
+            'total_credits' => 0
+        ];
         $stats['nb_users'] = $conn->query("SELECT COUNT(*) FROM utilisateur")->fetchColumn();
         $stats['nb_rides'] = $conn->query("SELECT COUNT(*) FROM covoiturage WHERE statut = 'TERMINÉ'")->fetchColumn();
         // Revenu total estimé (2 crédits par trajet terminé)
-        $stats['total_revenue'] = $conn->query("SELECT COUNT(*) * 2 FROM covoiturage WHERE statut = 'TERMINÉ'")->fetchColumn();
+        $stats['total_credits'] = $stats['nb_rides'] * 2;
         
         // 2. Stats pour les Graphiques
         // Récupérer la commission actuelle
@@ -37,7 +41,16 @@ class AdminController {
                      ORDER BY date_depart ASC";
         $graphData = $conn->query($sqlGraph)->fetchAll(PDO::FETCH_ASSOC);
 
-        // 3. Liste des utilisateurs (Top 50 récents ou Recherche)
+        // 3. Stats pour le Graphique Revenus (Gains par jour - Trajets terminés)
+        $sqlRevenue = "SELECT date_depart, COUNT(*) * 2 as revenue 
+                       FROM covoiturage 
+                       WHERE statut = 'TERMINÉ' 
+                       AND date_depart >= DATE(NOW() - INTERVAL 7 DAY)
+                       GROUP BY date_depart 
+                       ORDER BY date_depart ASC";
+        $revenueGraphData = $conn->query($sqlRevenue)->fetchAll(PDO::FETCH_ASSOC);
+
+        // 4. Liste des utilisateurs (Top 50 récents ou Recherche)
         $search = $_GET['search'] ?? '';
         $sqlUsers = "SELECT id_utilisateur, pseudo, email, id_role, credits, is_suspended 
                      FROM utilisateur";

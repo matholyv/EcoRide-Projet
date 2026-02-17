@@ -1,6 +1,6 @@
-# EcoRide - Guide de Déploiement Local
 
-Ce fichier explique comment installer et lancer l'application **EcoRide** sur votre machine.
+Ce fichier explique comment installer et lancer l'application **EcoRide** sur votre machine pour évaluation.
+
 
 ## 1. Prérequis
 
@@ -59,3 +59,5 @@ Voici les comptes pré-créés pour tester les différents rôles :
 
 > **Conseil :** Pour tester le parcours complet (Inscription, Crédits de bienvenue, Réservation), nous vous invitons à **créer votre propre compte** depuis la page d'inscription.
 
+---
+*Projet réalisé dans le cadre de l'évaluation EcoRide.*
